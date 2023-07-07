@@ -1,0 +1,1242 @@
+http headers examples:
+{Accept}: "Accept: application/json"
+{Content-Type}: "Content-Type: application/json"
+{token}: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODcyOTA5MjAsInVzZXJuYW1lIjoidXNlcm5hbWUwIn0.sWUbuJC-3HFC4BOGtp-ywLvlaBJybxUBl-PWacd3TdA"
+{Authorization} : "Authorization: Bearer {token}"
+
+Date & Time:
+Date and time are using UTC format, the elapsed milliseconds since 1970, of type long.   
+
+token is retrieved by login.  
+
+==========================================================================================================================
+==========================================================================================================================
+
+Entities
+
+Get all companies
+Method: GET
+URL: /api/v1/entities/companies
+Params: none
+Roles: admin, manager, technician, viewer
+Login required: true
+
+Example:
+curl -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies
+
+Return: 200
+[ {
+  "id" : 1,
+  "name" : "aaa",
+  "desc" : "aaaa",
+  "avatar" : null,
+  "projectIds" : [ ],
+  "userIds" : [ ],
+  "createdBy" : null,
+  "createdTime" : 1687811955154,
+  "modifiedBy" : null,
+  "modifiedTime" : 1687811955154
+}, {
+  "id" : 2,
+  "name" : "dddd",
+  "desc" : "kkkk",
+  "avatar" : {
+    "id" : 2,
+    "realFilename" : "/upload/avatar/default_company_avatar.png",
+    "displayFilename" : "/upload/avatar/default_company_avatar.png",
+    "fileType" : "Image",
+    "size" : null,
+    "createdBy" : null,
+    "createdTime" : 1687812178883,
+    "modifiedBy" : null,
+    "modifiedTime" : 1687812178883
+  },
+  "projectIds" : [ ],
+  "userIds" : [ ],
+  "createdBy" : null,
+  "createdTime" : 1687812178965,
+  "modifiedBy" : null,
+  "modifiedTime" : 1687812178965
+}, 
+......
+{
+  "id" : 52,
+  "name" : "ddd",
+  "desc" : "kkkk",
+  "avatar" : {
+    "id" : 2,
+    "realFilename" : "/upload/avatar/default_company_avatar.png",
+    "displayFilename" : "/upload/avatar/default_company_avatar.png",
+    "fileType" : "Image",
+    "size" : null,
+    "createdBy" : null,
+    "createdTime" : 1687812178883,
+    "modifiedBy" : null,
+    "modifiedTime" : 1687812178883
+  },
+  "projectIds" : [ ],
+  "userIds" : [ ],
+  "createdBy" : null,
+  "createdTime" : 1687817058020,
+  "modifiedBy" : null,
+  "modifiedTime" : 1687817058020
+}
+
+=============================================================
+
+Create a company
+Method: POST
+URL: /api/v1/entities/companies
+Params: PMSCompany in request body. 
+Roles: admin, manager, technician, viewer
+Login required: true
+Note:
+1. this function doesn't read projectIds and userIds fields. 
+2. If no avatar specified, it will use the default company avatar. 
+3. company name is globally unique. 
+
+Example:
+curl -X POST -H {Content-Type} -H {Accept} -H {Authorization} -d '{"name":"dddd0", "desc":"abc company description"}' http://localhost:8080/api/v1/entities/companies
+
+Return: 201
+{
+    "id": 103,
+    "name": "dddd0",
+    "desc": "abc company description",
+    "avatar": {
+        "id": 2,
+        "realFilename": "/upload/avatar/default_company_avatar.png",
+        "displayFilename": "/upload/avatar/default_company_avatar.png",
+        "fileType": "Image",
+        "size": null,
+        "createdBy": null,
+        "createdTime": 1687812178883,
+        "modifiedBy": null,
+        "modifiedTime": 1687812178883
+    },
+    "projectIds": [],
+    "userIds": [],
+    "createdBy": "root@sait.com",
+    "createdTime": 1687819564570,
+    "modifiedBy": "root@sait.com",
+    "modifiedTime": 1687819564570
+}
+
+=============================================================
+
+Get a company
+Method: GET
+URL: /api/v1/entities/companies/{company_id}
+Params: none
+Roles: admin, manager, technician, viewer
+Login required: true
+
+Example:
+curl -X GET -H {Content-Type} -H {Accept} -H {Authorization} -d '{[3,4,5]}' http://localhost:8080/api/v1/entities/companies/102
+
+Return: 200
+{
+    "id": 102,
+    "name": "ddda",
+    "desc": "kkkk",
+    "avatar": {
+        "id": 2,
+        "realFilename": "/upload/avatar/default_company_avatar.png",
+        "displayFilename": "/upload/avatar/default_company_avatar.png",
+        "fileType": "Image",
+        "size": null,
+        "createdBy": null,
+        "createdTime": 1687812178883,
+        "modifiedBy": null,
+        "modifiedTime": 1687812178883
+    },
+    "projectIds": [],
+    "userIds": [],
+    "createdBy": "root@sait.com",
+    "createdTime": 1687817308836,
+    "modifiedBy": "root@sait.com",
+    "modifiedTime": 1687817308836
+}
+
+=============================================================
+
+Update a company
+Method: PUT
+URL: /api/v1/entities/companies/{company_id}
+Params: PMSCompany in request body
+Roles: admin, manager, technician, viewer
+Login required: true
+Note:
+this function won't update id, projectIds and userIds. 
+
+Example:
+curl -X PUT -H {Content-Type} -H {Accept} -H {Authorization} -d '{"name":"dddd", "desc":"updated company description"}' http://localhost:8080/api/v1/entities/companies/102
+(we can see name field still exists in the request body but the value is meaningless. it is a placeholder.)
+
+Return: 200
+{
+    "id": 102,
+    "name": "ddda",
+    "desc": "updated company description",
+    "avatar": {
+        "id": 2,
+        "realFilename": "/upload/avatar/default_company_avatar.png",
+        "displayFilename": "/upload/avatar/default_company_avatar.png",
+        "fileType": "Image",
+        "size": null,
+        "createdBy": null,
+        "createdTime": 1687812178883,
+        "modifiedBy": null,
+        "modifiedTime": 1687812178883
+    },
+    "projectIds": [],
+    "userIds": [],
+    "createdBy": "root@sait.com",
+    "createdTime": 1687817308836,
+    "modifiedBy": "root@sait.com",
+    "modifiedTime": 1687832234292
+}
+
+=============================================================
+
+Delete a company
+Method: DELETE
+URL: /api/v1/entities/companies/{company_id}
+Params: company_id in request parameter. 
+Roles: admin, manager, technician, viewer
+Login required: true
+Note:
+delete a company will delete all its children, projects, tasks, comments etc.
+delete a company will unlink all the users. 
+
+Example:
+curl -X DELETE -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies/102
+
+Return: 204 (NO_CONTENT)
+
+=============================================================
+
+Create a project
+Method: POST
+URL: /api/v1/entities/companies/{company_id}/projects
+Params: company_id in path, PMSProject in request body. 
+Roles: admin, manager, technician, viewer
+Login required: true
+Notes:
+1. this function doesn't read companyId, taskIds, and dependentProjectIds fields in PMSProject object in the request body.
+2. companyId of project object will be set to {company_id} which comes from the url.  
+3. If no avatar specified, it will use the default project avatar. 
+4. project name is company wide unique.
+5. if startDate or endDate are not given in the request body, they are set to the current datetime.  
+
+Example:
+curl -X POST -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies/1/projects -d '{"company_id":1, "name":"project_1", "desc":"project_1_description", "priority":"Lower", "startDate":1687817058020, "endDate":1687817958031}'
+
+Return: 201
+
+{
+    "id": 52,
+    "companyId": 1,
+    "dependentProjectIds": [],
+    "taskIds": [],
+    "createdBy": "root@sait.com",
+    "createdTime": 1687881007976,
+    "modifiedBy": "root@sait.com",
+    "modifiedTime": 1687881007976,
+    "name": "project_2",
+    "priority": "Lower",
+    "desc": "project_2_description",
+    "avatar": {
+        "id": 52,
+        "realFilename": "/upload/avatar/project_default_avatar.png",
+        "displayFilename": "/upload/avatar/project_default_avatar.png",
+        "fileType": "Image",
+        "size": null,
+        "createdBy": "root@sait.com",
+        "createdTime": 1687880110807,
+        "modifiedBy": "root@sait.com",
+        "modifiedTime": 1687880110807
+    },
+    "startDate": 1687817058020,
+    "endDate": 1687817958031
+}
+
+=============================================================
+
+Get project list
+Method: GET
+URL: /api/v1/entities/companies/{company_id}/projects
+Params: {company_id} in url.  
+Roles: admin, manager, technician, viewer
+Login required: true
+
+Example:
+curl -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies/1/projects
+
+Return: 200
+
+[
+    {
+        "id": 1,
+        "companyId": 1,
+        "dependentProjectIds": [],
+        "taskIds": [],
+        "createdBy": "root@sait.com",
+        "createdTime": 1687880110858,
+        "modifiedBy": "root@sait.com",
+        "modifiedTime": 1687880110858,
+        "name": "project_1",
+        "priority": "Lower",
+        "desc": "project_1_description",
+        "avatar": {
+            "id": 52,
+            "realFilename": "/upload/avatar/project_default_avatar.png",
+            "displayFilename": "/upload/avatar/project_default_avatar.png",
+            "fileType": "Image",
+            "size": null,
+            "createdBy": "root@sait.com",
+            "createdTime": 1687880110807,
+            "modifiedBy": "root@sait.com",
+            "modifiedTime": 1687880110807
+        },
+        "startDate": 0,
+        "endDate": 0
+    },
+    {
+        "id": 52,
+        "companyId": 1,
+        "dependentProjectIds": [],
+        "taskIds": [],
+        "createdBy": "root@sait.com",
+        "createdTime": 1687881007976,
+        "modifiedBy": "root@sait.com",
+        "modifiedTime": 1687881007976,
+        "name": "project_2",
+        "priority": "Lower",
+        "desc": "project_2_description",
+        "avatar": {
+            "id": 52,
+            "realFilename": "/upload/avatar/project_default_avatar.png",
+            "displayFilename": "/upload/avatar/project_default_avatar.png",
+            "fileType": "Image",
+            "size": null,
+            "createdBy": "root@sait.com",
+            "createdTime": 1687880110807,
+            "modifiedBy": "root@sait.com",
+            "modifiedTime": 1687880110807
+        },
+        "startDate": 1687817058020,
+        "endDate": 1687817958031
+    }
+]
+
+=============================================================
+
+Get a project
+Method: GET
+URL: /api/v1/entities/companies/{company_id}/projects/{project_id}
+Params: {company_id} in url, {project_id} in url. 
+Roles: admin, manager, technician, viewer
+Login required: true
+
+Example:
+curl -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies/1/projects/1
+
+Return: 200
+
+{
+    "id": 1,
+    "companyId": 1,
+    "dependentProjectIds": [],
+    "taskIds": [],
+    "createdBy": "root@sait.com",
+    "createdTime": 1687880110858,
+    "modifiedBy": "root@sait.com",
+    "modifiedTime": 1687880110858,
+    "name": "project_1",
+    "priority": "Lower",
+    "desc": "project_1_description",
+    "avatar": {
+        "id": 52,
+        "realFilename": "/upload/avatar/project_default_avatar.png",
+        "displayFilename": "/upload/avatar/project_default_avatar.png",
+        "fileType": "Image",
+        "size": null,
+        "createdBy": "root@sait.com",
+        "createdTime": 1687880110807,
+        "modifiedBy": "root@sait.com",
+        "modifiedTime": 1687880110807
+    },
+    "startDate": 1687880110807,
+    "endDate": 1687880110807
+}
+
+=============================================================
+
+Update a project
+Method: UPDATE
+URL: /api/v1/entities/companies/{company_id}/projects/{project_id}
+Params: {company_id} in url, {project_id} in url, 
+		project object in request body.  
+Roles: admin, manager, technician, viewer
+Login required: true
+Note:
+1. this function doesn't update id, companyId, taskIds, and dependentProjectIds fields in PMSProject object in the request body.   
+
+Example:
+curl -X PUT -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies/1/projects/1 -d '{"name":"new_name", "desc":"new_desc", "priority":"Higher"}'
+
+Return: 200
+
+{
+    "id": 1,
+    "companyId": 1,
+    "dependentProjectIds": [],
+    "taskIds": [],
+    "createdBy": "root@sait.com",
+    "createdTime": 1687880110858,
+    "modifiedBy": "root@sait.com",
+    "modifiedTime": 1687880110858,
+    "name": "new_name",
+    "priority": "Higher",
+    "desc": "new_desc",
+    "avatar": {
+        "id": 52,
+        "realFilename": "/upload/avatar/project_default_avatar.png",
+        "displayFilename": "/upload/avatar/project_default_avatar.png",
+        "fileType": "Image",
+        "size": null,
+        "createdBy": "root@sait.com",
+        "createdTime": 1687880110807,
+        "modifiedBy": "root@sait.com",
+        "modifiedTime": 1687880110807
+    },
+    "startDate": 1687880110807,
+    "endDate": 1687880110807
+}
+
+=============================================================
+
+Delete a project
+Method: DELETE
+URL: /api/v1/entities/companies/{company_id}/projects/{project_id}
+Params: {company_id} in url, {project_id} in url.   
+Roles: admin, manager, technician, viewer
+Login required: true
+Note:
+delete a project will delete all its children, tasks, comments etc.
+delete a project will unlink all the users.   
+
+Example:
+curl -X DELETE -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies/1/projects/1
+
+Return: 204 (NO_CONTENT)
+
+=============================================================
+
+Create a task
+Method: POST
+URL: /companies/{company_id}/projects/{project_id}/tasks
+Params: {company_id}, {project_id} in url, PMSTask object in request body. 
+Roles: admin, manager, technician, viewer
+Login required: true
+Note:
+1. this function doesn't read projectId, dependentTaskIds, userIds, and commentIds fields.  
+2. If no avatar specified, it will use the default task avatar. 
+3. task name is unique in the project wide.  
+4. If startDate or endDate are not given in the request body, they are set to the current datetime.
+
+Example:
+curl -X POST -H {Content-Type} -H {Accept} -H {Authorization} -d '{"name":"test task", "desc":"test task description", "priority":"Low", "startDate":1687880110807, "endDate":1687880110807}' http://localhost:8080/api/v1/entities/companies
+
+Return: 201
+{
+  "id" : 1102,
+  "name" : "test task",
+  "desc" : "test task description",
+  "projectId" : 1,
+  "avatar" : {
+    "id" : 5,
+    "realFilename" : "/upload/avatar/task_default_avatar.png",
+    "displayFilename" : "/upload/avatar/task_default_avatar.png",
+    "fileType" : "Image",
+    "size" : null,
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1687897044184,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1687897044184
+  },
+  "dependentTaskIds" : [ ],
+  "userIds" : [ ],
+  "commentIds" : [ ],
+  "startDate" : 1687880110807,
+  "endDate" : 1687880110807,
+  "tags" : [ ],
+  "priority" : "Low",
+  "attachments" : [ ],
+  "createdBy" : "root@sait.com",
+  "createdTime" : 1687901291595,
+  "modifiedBy" : "root@sait.com",
+  "modifiedTime" : 1687901291595
+}
+
+=============================================================
+
+Get task list
+Method: GET
+URL: /companies/{company_id}/projects/{project_id}/tasks
+Params: {company_id}, and {project_id} in url.  
+Roles: admin, manager, technician, viewer
+Login required: true
+
+Example:
+curl -X GET -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies/1/projects/1/tasks
+
+Return: 200
+
+[ {
+  "id" : 2,
+  "name" : "company_0_name_project_0_task_0",
+  "desc" : "company_0_name_project_0_task_0_desc",
+  "projectId" : 1,
+  "avatar" : {
+    "id" : 4,
+    "realFilename" : "company_0_name_project_0_task_0_avatar_1687941779115",
+    "displayFilename" : "company_0_name_project_0_task_0_avatar",
+    "fileType" : "Image",
+    "size" : null,
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1687941779165,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1687941779165
+  },
+  "dependentTaskIds" : [ ],
+  "userIds" : [ ],
+  "commentIds" : [ 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ],
+  "startDate" : 1687941779115,
+  "endDate" : 1687941779115,
+  "tags" : [ ],
+  "priority" : "Higher",
+  "attachments" : [ ],
+  "createdBy" : "anonymousUser",
+  "createdTime" : 1687941779167,
+  "modifiedBy" : "anonymousUser",
+  "modifiedTime" : 1687941779167
+},
+......
+{
+  "id" : 11,
+  "name" : "company_0_name_project_0_task_9",
+  "desc" : "company_0_name_project_0_task_9_desc",
+  "projectId" : 1,
+  "avatar" : {
+    "id" : 5,
+    "realFilename" : "/upload/avatar/task_default_avatar.png",
+    "displayFilename" : "/upload/avatar/task_default_avatar.png",
+    "fileType" : "Image",
+    "size" : null,
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1687941779627,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1687941779627
+  },
+  "dependentTaskIds" : [ ],
+  "userIds" : [ ],
+  "commentIds" : [ 101, 102, 103, 104, 105, 106, 107, 108, 109, 110 ],
+  "startDate" : 1687941782814,
+  "endDate" : 1687941782814,
+  "tags" : [ ],
+  "priority" : "Higher",
+  "attachments" : [ ],
+  "createdBy" : "anonymousUser",
+  "createdTime" : 1687941782832,
+  "modifiedBy" : "anonymousUser",
+  "modifiedTime" : 1687941782832
+} ]
+=============================================================
+
+Get a task
+Method: GET
+URL: /companies/{company_id}/projects/{project_id}/tasks/{task_id}
+Params: {company_id}, {project_id}, and {task_id} in url.  
+Roles: admin, manager, technician, viewer
+Login required: true
+
+Example:
+curl -X GET -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies/1/projects/1/tasks/1102
+
+Return: 200
+{
+  "id" : 1102,
+  "name" : "test task",
+  "desc" : "test task description",
+  "projectId" : 1,
+  "avatar" : {
+    "id" : 5,
+    "realFilename" : "/upload/avatar/task_default_avatar.png",
+    "displayFilename" : "/upload/avatar/task_default_avatar.png",
+    "fileType" : "Image",
+    "size" : null,
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1687897044184,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1687897044184
+  },
+  "dependentTaskIds" : [ ],
+  "userIds" : [ ],
+  "commentIds" : [ ],
+  "startDate" : 1687880110807,
+  "endDate" : 1687880110807,
+  "tags" : [ ],
+  "priority" : "Low",
+  "attachments" : [ ],
+  "createdBy" : "root@sait.com",
+  "createdTime" : 1687901291595,
+  "modifiedBy" : "root@sait.com",
+  "modifiedTime" : 1687901291595
+}
+
+=============================================================
+
+Update a task
+Method: PUT
+URL: /companies/{company_id}/projects/{project_id}/tasks/{task_id}
+Params: {company_id}, {project_id}, and {task_id} in url, PMSTask object in request body.   
+Roles: admin, manager, technician, viewer
+Login required: true
+Note:
+1. this function doesn't read projectId, dependentTaskIds, userIds, and commentIds fields.   
+2. task name is unique in the project wide.  
+
+Example:
+curl -X PUT -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies/1/projects/1/tasks/1102 -d '{"name" : "new_task_name", "desc" : "new_task_description", "avatar" : {"displayFilename" : "/upload/avatar/new_task_avatar.png", "realFilename" : "/upload/avatar/new_task_avatar.png", "fileType" : "Image"}, "startDate" : 1687880110807, "endDate" : 1687880110807, "priority" : "Low" }'
+
+Return: 200
+{
+  "id" : 11,
+  "name" : "new_task_name",
+  "desc" : "new_task_description",
+  "projectId" : 1,
+  "avatar" : {
+    "id" : 5,
+    "realFilename" : "/upload/avatar/task_default_avatar.png",
+    "displayFilename" : "/upload/avatar/task_default_avatar.png",
+    "fileType" : "Image",
+    "size" : null,
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1687941779627,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1687941779627
+  },
+  "dependentTaskIds" : [ ],
+  "userIds" : [ ],
+  "commentIds" : [ 101, 102, 103, 104, 105, 106, 107, 108, 109, 110 ],
+  "startDate" : 1687880110807,
+  "endDate" : 1687880110807,
+  "tags" : [ ],
+  "priority" : "Low",
+  "attachments" : [ ],
+  "createdBy" : "anonymousUser",
+  "createdTime" : 1687941782832,
+  "modifiedBy" : "root@sait.com",
+  "modifiedTime" : 1687949738867
+}
+
+=============================================================
+
+Delete a task
+Method: DELETE
+URL: /companies/{company_id}/projects/{project_id}/tasks/{task_id}
+Params: {company_id}, {project_id}, and {task_id} in url.    
+Roles: admin, manager, technician, viewer
+Login required: true
+
+Example:
+curl -X DELETE -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies/1/projects/1/tasks/11
+
+Return: 204 (NO_CONTENT)
+
+=============================================================
+
+Get comments. 
+Method: GET
+/companies/{company_id}/projects/{project_id}/comments")
+URL: /companies/{company_id}/projects/{project_id}/comments
+Params: {company_id}, and {project_id} in url, {project_only} in request params.    
+Roles: admin, manager, technician, viewer
+Login required: true
+Note:
+return value is a two-dimensional array. 
+1. when project_only is true, it only returns the project comments (without comments from tasks). the first and the only element is the project only comments list. 
+2. when project_only is false or without project only request parameter, it returns the project comments and the comments from tasks. the first element is the project comment list, the second onward are the lists of each task comments.  
+
+Example:
+1) only fetch project-only comments
+curl -X GET -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies/1/projects/1/comments?project_only=true
+
+Return: 200
+
+[ [ {
+  "id" : 1,
+  "title" : "company_0_name_project_0_comment_title",
+  "desc" : "company_0_name_project_0_comment_title_desc",
+  "attachments" : [ ],
+  "taskId" : 1,
+  "createdBy" : "anonymousUser",
+  "createdTime" : 1687967835016,
+  "modifiedBy" : "anonymousUser",
+  "modifiedTime" : 1687967835016
+}, 
+......
+{
+  "id" : 10,
+  "title" : "company_0_name_project_0_comment_title",
+  "desc" : "company_0_name_project_0_comment_title_desc",
+  "attachments" : [ ],
+  "taskId" : 1,
+  "createdBy" : "anonymousUser",
+  "createdTime" : 1687967835577,
+  "modifiedBy" : "anonymousUser",
+  "modifiedTime" : 1687967835577
+} ] ]
+
+2) fetch project and its tasks' comments. (project_only=false, or without project_only request param). 
+curl -X GET -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODc5ODk2MDgsInVzZXJuYW1lIjoicm9vdEBzYWl0LmNvbSJ9.ap0097-_RJpRmfyaoOW1XWymJFVFHgSVErlRJnDxPmc" http://localhost:8080/api/v1/entities/companies/1/projects/1/comments?project_only=false
+or
+curl -X GET -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODc5ODk2MDgsInVzZXJuYW1lIjoicm9vdEBzYWl0LmNvbSJ9.ap0097-_RJpRmfyaoOW1XWymJFVFHgSVErlRJnDxPmc" http://localhost:8080/api/v1/entities/companies/1/projects/1/comments
+
+Return: 200
+[
+    [
+        {
+            "id": 1,
+            "title": "company_0_name_project_0_comment_title",
+            "desc": "company_0_name_project_0_comment_title_desc",
+            "attachments": [],
+            "taskId": 1,
+            "createdBy": "anonymousUser",
+            "createdTime": 1687967835016,
+            "modifiedBy": "anonymousUser",
+            "modifiedTime": 1687967835016
+        },
+        ......
+        {
+            "id": 10,
+            "title": "company_0_name_project_0_comment_title",
+            "desc": "company_0_name_project_0_comment_title_desc",
+            "attachments": [],
+            "taskId": 1,
+            "createdBy": "anonymousUser",
+            "createdTime": 1687967835577,
+            "modifiedBy": "anonymousUser",
+            "modifiedTime": 1687967835577
+        }
+    ],
+    [
+        {
+            "id": 11,
+            "title": "company_0_name_project_0_task_0_comment_title",
+            "desc": "company_0_name_project_0_task_0_comment_title_desc",
+            "attachments": [],
+            "taskId": 2,
+            "createdBy": "anonymousUser",
+            "createdTime": 1687967835704,
+            "modifiedBy": "anonymousUser",
+            "modifiedTime": 1687967835704
+        },
+        ......
+        {
+            "id": 20,
+            "title": "company_0_name_project_0_task_0_comment_title",
+            "desc": "company_0_name_project_0_task_0_comment_title_desc",
+            "attachments": [],
+            "taskId": 2,
+            "createdBy": "anonymousUser",
+            "createdTime": 1687967836037,
+            "modifiedBy": "anonymousUser",
+            "modifiedTime": 1687967836037
+        }
+    ],
+    ......
+    [
+        {
+            "id": 101,
+            "title": "company_0_name_project_0_task_9_comment_title",
+            "desc": "company_0_name_project_0_task_9_comment_title_desc",
+            "attachments": [],
+            "taskId": 11,
+            "createdBy": "anonymousUser",
+            "createdTime": 1687967839254,
+            "modifiedBy": "anonymousUser",
+            "modifiedTime": 1687967839254
+        },
+        ......
+        {
+            "id": 110,
+            "title": "company_0_name_project_0_task_9_comment_title",
+            "desc": "company_0_name_project_0_task_9_comment_title_desc",
+            "attachments": [],
+            "taskId": 11,
+            "createdBy": "anonymousUser",
+            "createdTime": 1687967839560,
+            "modifiedBy": "anonymousUser",
+            "modifiedTime": 1687967839560
+        }
+    ]
+]
+
+=============================================================
+
+Create a comment for a project.
+Method: POST
+URL: /companies/{company_id}/projects/{project_id}/comments
+Params: {company_id}, and {project_id} in url, PMSComment object in request body.     
+Roles: admin, manager, technician, viewer
+Login required: true
+Note: 
+1. this function doesn't read id, attachments and taskId fields.    
+
+Example:
+curl -X POST -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies/1/projects/1/comments -d '{"title":"comment_title", "desc":"comment_desc"}'
+
+Return: 201
+
+{
+  "id" : 11052,
+  "title" : "comment_title",
+  "desc" : "comment_desc",
+  "attachments" : [ ],
+  "taskId" : 1,
+  "createdBy" : "root@sait.com",
+  "createdTime" : 1687993431904,
+  "modifiedBy" : "root@sait.com",
+  "modifiedTime" : 1687993431904
+}
+
+=============================================================
+
+Create a comment for a task.
+Method: POST
+URL: /companies/{company_id}/projects/{project_id}/tasks/{task_id}/comments
+Params: {company_id}, {project_id}, and {task_id} in url, PMSComment object in request body.     
+Roles: admin, manager, technician, viewer
+Login required: true
+Note: 
+1. this function doesn't read id, attachments and taskId fields.    
+
+Example:
+curl -X POST -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies/1/projects/1/tasks/2/comments -d '{"title":"comment_title", "desc":"comment_desc"}'
+
+Return: 201
+
+{
+  "id" : 11102,
+  "title" : "comment_title",
+  "desc" : "comment_desc",
+  "attachments" : [ ],
+  "taskId" : 2,
+  "createdBy" : "root@sait.com",
+  "createdTime" : 1687993921302,
+  "modifiedBy" : "root@sait.com",
+  "modifiedTime" : 1687993921302
+}
+
+=============================================================
+
+Get a comment
+Method: GET
+URL: /companies/{company_id}/projects/{project_id}/comments/{comment_id}
+Params: {company_id}, {project_id}, and {comment_id} in url. 
+Roles: admin, manager, technician, viewer
+Login required: true
+
+Example:
+curl -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies/1/projects/1/comments/1
+
+Return: 200
+
+{
+  "id" : 1,
+  "title" : "company_0_name_project_0_comment_title",
+  "desc" : "company_0_name_project_0_comment_title_desc",
+  "attachments" : [ ],
+  "taskId" : 1,
+  "createdBy" : "anonymousUser",
+  "createdTime" : 1687967835016,
+  "modifiedBy" : "anonymousUser",
+  "modifiedTime" : 1687967835016
+}
+
+=============================================================
+
+Update a comment
+Method: PUT
+URL: /companies/{company_id}/projects/{project_id}/comments/{comment_id}
+Params: {company_id}, {project_id}, and {comment_id} in url， PMSComment object in request body. 
+Roles: admin, manager, technician, viewer
+Login required: true
+1. this function doesn't read id, attachments and taskId fields.   
+
+Example:
+curl -X PUT -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies/1/projects/1/comments/1 -d '{"id":1, "title":"new_title", "desc":"new_desc"}'
+
+Return: 200
+
+{
+  "id" : 1,
+  "title" : "new_title",
+  "desc" : "new_desc",
+  "attachments" : [ ],
+  "taskId" : 1,
+  "createdBy" : "anonymousUser",
+  "createdTime" : 1687967835016,
+  "modifiedBy" : "root@sait.com",
+  "modifiedTime" : 1688050305911
+}
+
+=============================================================
+
+Get comments by a task. 
+Method: GET
+URL: /companies/{company_id}/projects/{project_id}/tasks/{task_id}/comments
+Params: {company_id}, {project_id}, and {task_id} in url. 
+Roles: admin, manager, technician, viewer
+Login required: true
+
+Example:
+curl -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies/1/projects/1/tasks/1 
+
+Return: 200
+
+[ {
+  "id" : 1,
+  "title" : "new_title",
+  "desc" : "new_desc",
+  "attachments" : [ ],
+  "taskId" : 1,
+  "createdBy" : "anonymousUser",
+  "createdTime" : 1687967835016,
+  "modifiedBy" : "root@sait.com",
+  "modifiedTime" : 1688050305911
+}, 
+......
+{
+  "id" : 11052,
+  "title" : "comment_title",
+  "desc" : "comment_desc",
+  "attachments" : [ ],
+  "taskId" : 1,
+  "createdBy" : "root@sait.com",
+  "createdTime" : 1687993431904,
+  "modifiedBy" : "root@sait.com",
+  "modifiedTime" : 1687993431904
+} ]
+
+=============================================================
+
+Delete a comment 
+Method: DELETE
+URL: /companies/{company_id}/projects/{project_id}/comments/{comment_id}
+Params: {company_id}, {project_id}, and {comment_id} in url. 
+Roles: admin, manager, technician, viewer
+Login required: true
+Note:
+delete a comment will delete the comment itself, remove it from its task and remove its attachments. 
+
+Example:
+curl -X DELETE -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies/1/projects/1/comments/1
+
+Return: 204 (NO_CONTENT)
+
+=============================================================
+
+Get comments by task 
+Method: GET
+URL: /companies/{company_id}/projects/{project_id}/tasks/{task_id}/comments
+Params: {company_id}, {project_id}, and {task_id} in url. 
+Roles: admin, manager, technician, viewer
+Login required: true
+
+Example:
+curl -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies/1/projects/1/tasks/1/comments
+
+Return: 200 
+
+[ {
+  "id" : 1,
+  "title" : "new_title",
+  "desc" : "new_desc",
+  "attachments" : [ ],
+  "taskId" : 1,
+  "createdBy" : "anonymousUser",
+  "createdTime" : 1687967835016,
+  "modifiedBy" : "root@sait.com",
+  "modifiedTime" : 1688050305911
+},
+...... 
+{
+  "id" : 11052,
+  "title" : "comment_title",
+  "desc" : "comment_desc",
+  "attachments" : [ ],
+  "taskId" : 1,
+  "createdBy" : "root@sait.com",
+  "createdTime" : 1687993431904,
+  "modifiedBy" : "root@sait.com",
+  "modifiedTime" : 1687993431904
+} ]
+
+=============================================================
+
+Create a comment for a task. 
+Method: POST
+URL: /companies/{company_id}/projects/{project_id}/tasks/{task_id}/comments
+Params: {company_id}, {project_id}, and {task_id} in url, PMSComment object in request body.  
+Roles: admin, manager, technician, viewer
+Login required: true
+Note: 
+1. this function doesn't read id, attachments and taskId fields.
+
+Example:
+curl -X POST -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/companies/1/projects/1/tasks/2/comments -d '{"title":"task_comment_title", "desc":"task_comment_desc"}'
+
+Return: 201 Created
+
+{
+  "id" : 11152,
+  "title" : "task_comment_title",
+  "desc" : "task_comment_desc",
+  "attachments" : [ ],
+  "taskId" : 2,
+  "createdBy" : "root@sait.com",
+  "createdTime" : 1688417302699,
+  "modifiedBy" : "root@sait.com",
+  "modifiedTime" : 1688417302699
+}
+
+=============================================================
+
+Create a user. 
+Method: POST
+URL: /users
+Params: PMSUser object in request body, company_id in request params. When create an admin user, do not specify company_id in request params(admin users don't have company).   
+Roles: admin, manager, technician, viewer
+Login required: true
+Note: 
+1. this function reads firstName, lastName, password, email, avatar, roles. 
+
+Ex. 
+curl -X POST -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/users?company_id=1 -d '{"firstName":"user_first_name", "lastName":"user_last_name", "email":"user_email@mail.com", "password":"password", "roles":["technician", "viewer"]}';
+
+Return: 201 Created
+
+{
+  "id" : 202,
+  "firstName" : "user_first_name",
+  "lastName" : "user_last_name",
+  "email" : "user_email@mail.com",
+  "password" : "$2a$10$fdHUhlq0GLS2Ch4wECjrc.lEK1b6io4p.TFuLyDXHooV3kXMxizwm",
+  "avatar" : {
+    "id" : 752,
+    "realFilename" : "/upload/avatar/user_default_avatar.png",
+    "displayFilename" : "/upload/avatar/user_default_avatar.png",
+    "fileType" : "Image",
+    "size" : null,
+    "parentId" : -1,
+    "createdBy" : "root@sait.com",
+    "createdTime" : 1688533547230,
+    "modifiedBy" : "root@sait.com",
+    "modifiedTime" : 1688533547230
+  },
+  "roles" : [ {
+    "id" : 3,
+    "name" : "technician",
+    "desc" : "technician:technician",
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1687967823665,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1687967823665
+  }, {
+    "id" : 4,
+    "name" : "viewer",
+    "desc" : "viewer:viewer",
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1687967823692,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1687967823692
+  } ],
+  "tags" : [ ],
+  "createdBy" : "root@sait.com",
+  "createdTime" : 1688533547377,
+  "modifiedBy" : "root@sait.com",
+  "modifiedTime" : 1688533547377
+}
+
+=============================================================
+
+Get a user
+Method: GET
+URL: /users/{user_id}
+Params: {user_id} in url.    
+Roles: admin, manager, technician, viewer
+Login required: true
+
+curl -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/users/202
+
+Return: 200
+
+{
+  "id" : 202,
+  "firstName" : "user_first_name",
+  "lastName" : "user_last_name",
+  "email" : "user_email@mail.com",
+  "password" : "$2a$10$fdHUhlq0GLS2Ch4wECjrc.lEK1b6io4p.TFuLyDXHooV3kXMxizwm",
+  "avatar" : {
+    "id" : 752,
+    "realFilename" : "/upload/avatar/user_default_avatar.png",
+    "displayFilename" : "/upload/avatar/user_default_avatar.png",
+    "fileType" : "Image",
+    "size" : null,
+    "parentId" : -1,
+    "createdBy" : "root@sait.com",
+    "createdTime" : 1688533547230,
+    "modifiedBy" : "root@sait.com",
+    "modifiedTime" : 1688533547230
+  },
+  "roles" : [ {
+    "id" : 3,
+    "name" : "technician",
+    "desc" : "technician:technician",
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1687967823665,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1687967823665
+  }, {
+    "id" : 4,
+    "name" : "viewer",
+    "desc" : "viewer:viewer",
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1687967823692,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1687967823692
+  } ],
+  "tags" : [ ],
+  "createdBy" : "root@sait.com",
+  "createdTime" : 1688533547377,
+  "modifiedBy" : "root@sait.com",
+  "modifiedTime" : 1688533547377
+}
+
+=============================================================
+
+Update a user
+Method: Put
+URL: /users/{user_id}
+Params: {company_id} in request params, PMSUser object in request body.     
+Roles: admin, manager, technician, viewer
+Login required: true
+Note:
+1. the user with admin role doesn't have any company (company_id == -1), so if change the user's role from non-admin to admin, the company_id in request param can be ommited; 
+	if change the user's role from admin to non-admin, the company_id in request param must be provided.
+2. this function reads firstName, lastName, password, email, avatar, roles. 
+
+curl -X PUT -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/users/202?company_id=1 -d '{"firstName":"user_first_name1", "lastName":"user_last_name1", "email":"user_email1@mail.com", "password":"password", "roles":["admin", "technician", "viewer"]}';
+
+Return: 200
+
+{
+  "id" : 202,
+  "firstName" : "user_first_name1",
+  "lastName" : "user_last_name1",
+  "email" : "user_email1@mail.com",
+  "password" : "$2a$10$V9MnpknaEDPzSP/UiXFzAuSkRh1FiBvWDrQCyj9hU8gjsPTFY5il6",
+  "avatar" : {
+    "id" : 752,
+    "realFilename" : "/upload/avatar/user_default_avatar.png",
+    "displayFilename" : "/upload/avatar/user_default_avatar.png",
+    "fileType" : "Image",
+    "size" : null,
+    "parentId" : -1,
+    "createdBy" : "root@sait.com",
+    "createdTime" : 1688533547230,
+    "modifiedBy" : "root@sait.com",
+    "modifiedTime" : 1688533547230
+  },
+  "roles" : [ {
+    "id" : 3,
+    "name" : "technician",
+    "desc" : "technician:technician",
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1687967823665,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1687967823665
+  }, {
+    "id" : 1,
+    "name" : "admin",
+    "desc" : "admin:admin",
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1687967823434,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1687967823434
+  }, {
+    "id" : 4,
+    "name" : "viewer",
+    "desc" : "viewer:viewer",
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1687967823692,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1687967823692
+  } ],
+  "tags" : [ ],
+  "createdBy" : "root@sait.com",
+  "createdTime" : 1688533547377,
+  "modifiedBy" : "root@sait.com",
+  "modifiedTime" : 1688537477723
+}
+
+=============================================================
+
+Delete a user
+Method: DELETE
+URL: /users/{user_id}
+Params: {user_id} in url.    
+Roles: admin, manager, technician, viewer
+Login required: true
+
+curl -X DELETE -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/users/202
+
+Return: 204 NO_CONTENT
+
+=============================================================
+
+Get projects by a user
+Method: GET
+URL: /users/{user_id}/projects
+Params: {user_id} in url.    
+Roles: admin, manager, technician, viewer
+Login required: true
+
+curl -X GET -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/users/1/projects
+
+Return: 200
+// TODO
+
+=============================================================
+
+Get tasks by a user
+Method: GET
+URL: /users/{user_id}/tasks
+Params: {user_id} in url.    
+Roles: admin, manager, technician, viewer
+Login required: true
+
+curl -X GET -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/entities/users/1/tasks
+
+Return: 200, a list of list of tasks, grouped by project. 
+// TODO
+
+==========================================================================================================================
+==========================================================================================================================
+
+Actions
+

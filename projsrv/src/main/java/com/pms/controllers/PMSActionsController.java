@@ -5,13 +5,10 @@ package com.pms.controllers;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.pms.constants.PMSEntityConstants;
 import com.pms.constants.PMSFileType;
 import com.pms.entities.PMSFile;
 import com.pms.entities.PMSLoginInfo;
@@ -32,6 +30,7 @@ import com.pms.entities.PMSTask;
 import com.pms.entities.PMSUser;
 import com.pms.services.PMSEntityProvider;
 import com.pms.services.PMSSecurityService;
+import com.pms.utils.PMSRandom;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,24 +51,24 @@ public class PMSActionsController {
     private PMSSecurityService securityService;
     
     @PostMapping(value="/login")
-    public ResponseEntity<String> login(@RequestParam(value="logout", required=false, defaultValue="false") boolean logout, 
-    		@RequestBody @Validated PMSLoginInfo loginInfo) {
-    	if (logout) {
-    		log.debug("logout");
-    		return new ResponseEntity<>(securityService.logout(), HttpStatus.OK);
-    	}
-    	
+    public ResponseEntity<String> login(@RequestBody @Validated PMSLoginInfo loginInfo) {
     	return new ResponseEntity<>(securityService.login(loginInfo), HttpStatus.OK);
     }
     
+    @PreAuthorize("hasAnyAuthority('viewer')")
+    @GetMapping(value="/logout")
+    public ResponseEntity<Void> logout() {
+    	log.debug("logout");
+    	securityService.logout();
+    	
+    	return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+    }
+    
     @PostMapping(value="/register")
-    public ResponseEntity<PMSUser> createUser(@RequestBody @Valid PMSUser user, 
-    		@RequestParam(name="company_id", required=true) Long companyId, 
-            BindingResult result) {
-        if (result.hasErrors()) {
-            return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
-        }
-        
+    public ResponseEntity<PMSUser> createUser(@RequestBody @Validated PMSUser user, 
+    		@RequestParam(name="company_id", required=true) Long companyId) {
+    	String password = PMSRandom.randomPassword(PMSEntityConstants.kMaxUserPasswordLen);
+    	user.setPassword(password);
         return new ResponseEntity<>(entityProvider.createUser(user, companyId), HttpStatus.CREATED);
     }
     
@@ -83,7 +82,7 @@ public class PMSActionsController {
     @PreAuthorize("hasAnyAuthority('admin', 'manager', 'technician', 'viewer')")
     @PostMapping(value="/depend/projects/{project_id}")
     public PMSProject addDependentProjects(@PathVariable("project_id") Long projectId, 
-            @RequestBody List<Long> dependentProjectIds) {
+            @RequestBody @Validated List<Long> dependentProjectIds) {
         return entityProvider.addDependentProjectIds(projectId, dependentProjectIds);
     }
     
@@ -105,14 +104,14 @@ public class PMSActionsController {
     @PreAuthorize("hasAnyAuthority('admin', 'manager', 'technician', 'viewer')")
     @PostMapping(value="/depend/tasks/{task_id}")
     public PMSTask addDependentTasks(@PathVariable("task_id") Long taskId, 
-            @RequestBody List<Long> dependentTaskIds) {
+            @RequestBody @Validated List<Long> dependentTaskIds) {
         return entityProvider.addDependentTasks(taskId, dependentTaskIds);
     }
     
     @PreAuthorize("hasAnyAuthority('admin', 'manager', 'technician', 'viewer')")
     @PutMapping(value="/depend/tasks/{task_id}")
     public PMSTask setDependentTasks(@PathVariable("task_id") Long taskId, 
-            @RequestBody List<Long> dependentTaskIds) {
+            @RequestBody @Validated List<Long> dependentTaskIds) {
         return entityProvider.setDependentTasks(taskId, dependentTaskIds);
     }
     
@@ -133,14 +132,14 @@ public class PMSActionsController {
     @PreAuthorize("hasAnyAuthority('admin', 'manager', 'technician', 'viewer')")
     @PostMapping(value="/assign/tasks/{taskId}")
     public PMSTask addUsersToTask(@PathVariable("taskId") Long taskId, 
-                @RequestBody List<Long> userIds) {
+                @RequestBody @Validated List<Long> userIds) {
         return entityProvider.addUsersToTask(taskId, userIds);
     }
     
     @PreAuthorize("hasAnyAuthority('admin', 'manager', 'technician', 'viewer')")
     @PutMapping(value="/assign/tasks/{taskId}")
     public PMSTask setUsersToTask(@PathVariable("taskId") Long taskId, 
-                @RequestBody List<Long> userIds) {
+                @RequestBody @Validated List<Long> userIds) {
         return entityProvider.setUsersToTask(taskId, userIds);
     }
     
@@ -161,14 +160,14 @@ public class PMSActionsController {
     @PreAuthorize("hasAnyAuthority('admin', 'manager', 'technician', 'viewer')")
     @PostMapping(value="/assign/projects/{projectId}")
     public PMSTask addUsersToProject(@PathVariable("projectId") Long projectId, 
-                @RequestBody List<Long> userIds) {
+                @RequestBody @Validated List<Long> userIds) {
         return entityProvider.addUsersToProject(projectId, userIds);
     }
     
     @PreAuthorize("hasAnyAuthority('admin', 'manager', 'technician', 'viewer')")
     @PutMapping(value="/assign/projects/{projectId}")
     public PMSTask setUsersToProject(@PathVariable("projectId") Long projectId, 
-                @RequestBody List<Long> userIds) {
+                @RequestBody @Validated List<Long> userIds) {
         return entityProvider.setUsersToProject(projectId, userIds);
     }
     

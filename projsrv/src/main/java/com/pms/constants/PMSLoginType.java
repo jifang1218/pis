@@ -1,13 +1,13 @@
 package com.pms.constants;
 
-public enum PMSAuthType {
+public enum PMSLoginType {
 	system("system"), 
 	microsoft("microsoft"), 
 	google("google");
 	
 	private String value;
 	 
-	PMSAuthType(String value) {
+	PMSLoginType(String value) {
         this.value = value;
     }
  

@@ -57,9 +57,8 @@ public class PMSSecurityService {
         return token;
 	}
 	
-	public String logout() {
+	public void logout() {
 		SecurityContextHolder.getContext().setAuthentication(null);
-		return "";
 	}
 	
 	public Optional<PMSUser> getCurrentLoginUser() {

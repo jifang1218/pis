@@ -4,10 +4,13 @@
 package com.pms.services;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -81,6 +84,9 @@ public class PMSEntityProvider {
     
     @Autowired
     private PMSTagRepo tagRepo;
+    
+    @Autowired
+    private PMSSendMailService sendMail;
 
     /**
      * helper function to find the removed ID set by comparing the old&new sets. 
@@ -1270,15 +1276,16 @@ public class PMSEntityProvider {
     		throw new DuplicateObjectsException("user email=" + user.getEmail() + " already exists.");
     	}
     	
-    	if (user.getPassword() != null) {
-    		user.setPassword(passwdEncoder.encode(user.getPassword()));
+    	String password = user.getPassword();
+    	if (password != null) {
+    		user.setPassword(passwdEncoder.encode(password));
     	}
     	
     	if (user.getAvatar() != null) {
     		user.getAvatar().setParentId(user.getId());
     		fileRepo.save(user.getAvatar());
     	} else {
-    		log.debug("avatar doesn't specify so use the default avatar.");
+    		log.debug("doesn't specify avatar so use the default avatar.");
     		user.setAvatar(getDefaultUserAvatar());
     	}
     	
@@ -1296,6 +1303,15 @@ public class PMSEntityProvider {
     	
     	comp.getUserIds().add(ret.getId());
         compRepo.save(comp);
+        
+        // send password to user.
+        String body = String.format("Login info:\nEmail:%s\nPassword:%s\n", 
+        		user.getEmail(), password); 
+        try {
+			sendMail.sendmail("Credential Info", body, user.getEmail());
+		} catch (MessagingException | IOException e) {
+			throw new RequestValueMismatchException("failed to send mail to: " + user.getEmail());
+		}
     	
         return ret;
     }
@@ -1563,32 +1579,56 @@ public class PMSEntityProvider {
     	}	
     }
     
-    public List<PMSProject> getProjectsByUserId(Long userId) {
+    public List<List<PMSProject>> getProjectsByUserId(Long userId) {
         userRepo.findById(userId).orElseThrow(
                 ()-> {
                 	log.debug("No user found with id=" + userId);
                 	return new ResourceNotFoundException("No user found with id=" + userId);
                 });
+        List<List<PMSProject>> ret = new ArrayList<>();
         
-        List<PMSProject> ret = new ArrayList<>();
+        List<PMSCompany> companies = compRepo.findAll();
+        for (PMSCompany comp : companies) {
+        	List<PMSProject> retProjs = new ArrayList<>();
+        	List<PMSProject> projects = projRepo.findAllByCompanyId(comp.getId());
         
-        List<PMSProject> allProjects = projRepo.findAll();
-        for (PMSProject project : allProjects) {
-            if (this.isUserExistsInProject(userId, project.getId())) {
-                ret.add(project);
-            }
+	        for (PMSProject project : projects) {
+	            if (this.isUserExistsInProject(userId, project.getId())) {
+	            	retProjs.add(project);
+	            }
+	        }
+	        
+	        if (retProjs.size() > 0) {
+	        	ret.add(retProjs);
+	        }
         }
         
         return ret;
     }
     
-    public List<List<PMSTask>> getTasksByUserId(Long userId) {
-        List<List<PMSTask>> ret = new ArrayList<>();
+    public List<List<List<PMSTask>>> getTasksByUserId(Long userId) {
+        List<List<List<PMSTask>>> ret = new ArrayList<>();
         
-        List<PMSProject> projects = getProjectsByUserId(userId);
-        for (PMSProject project : projects) {
-            List<PMSTask> item = getTasksByUserId(userId, project.getId());
-            ret.add(item);
+        List<PMSCompany> companies = compRepo.findAll();
+        for (PMSCompany comp : companies) {
+        	List<List<PMSTask>> retProjs = new ArrayList<>();
+        	
+        	List<PMSProject> projects = projRepo.findAllByCompanyId(comp.getId());
+        	for (PMSProject project : projects) {
+        		List<PMSTask> retTasks = new ArrayList<>();
+        		List<PMSTask> tasks = taskRepo.findAllByProjectId(project.getId());
+        		for (PMSTask task : tasks) {
+        			if (this.isUserExistsInTask(userId, task.getId())) {
+        				retTasks.add(task);
+        			}
+        		}
+        		if (retTasks.size() > 0) {
+        			retProjs.add(retTasks);
+        		}
+        	}
+        	if (retProjs.size() > 0) {
+        		ret.add(retProjs);
+        	}
         }
         
         return ret;

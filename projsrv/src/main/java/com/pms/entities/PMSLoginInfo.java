@@ -4,7 +4,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import com.pms.constants.PMSAuthType;
+import com.pms.constants.PMSLoginType;
 
 import lombok.Data;
 
@@ -19,5 +19,5 @@ public class PMSLoginInfo {
 	@NotEmpty(message="password cannot be empty")
 	private String password;
 
-	private PMSAuthType authType = PMSAuthType.system;
+	private PMSLoginType loginType = PMSLoginType.system;
 }

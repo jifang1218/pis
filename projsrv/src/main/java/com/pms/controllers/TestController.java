@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pms.constants.PMSAuthType;
+import com.pms.constants.PMSLoginType;
 import com.pms.constants.PMSFileType;
 import com.pms.constants.PMSPriority;
 import com.pms.constants.PMSRoleName;
@@ -129,7 +129,7 @@ public class TestController {
     	PMSLoginInfo info = new PMSLoginInfo();
     	info.setEmail("root@root.com");
     	info.setPassword("root");
-    	info.setAuthType(PMSAuthType.system);
+    	info.setLoginType(PMSLoginType.system);
     	securityService.login(info);
     }
     

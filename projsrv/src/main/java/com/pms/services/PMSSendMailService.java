@@ -1,4 +1,4 @@
-package com.pms.controllers;
+package com.pms.services;
 
 import java.io.IOException;
 import java.util.Date;
@@ -16,10 +16,13 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.springframework.stereotype.Service;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class SendMailService {
+@Service
+public class PMSSendMailService {
 	
 	public void sendmail(String title, String body, String to) throws AddressException, MessagingException, IOException {
 		   Properties props = new Properties();
@@ -28,23 +31,34 @@ public class SendMailService {
 		   props.put("mail.smtp.host", "smtp.gmail.com");
 		   props.put("mail.smtp.port", "587");
 		   
+		   String from = "jifang1218@gmail.com";
 		   String googleAppPasswd = "uuyizlfynoojfjug";
 		   
 		   Session session = Session.getInstance(props, new javax.mail.Authenticator() {
 		      protected PasswordAuthentication getPasswordAuthentication() {
-		         return new PasswordAuthentication("jifang1218@gmail.com", googleAppPasswd);
+		         return new PasswordAuthentication(from, googleAppPasswd);
 		      }
 		   });
 		   Message msg = new MimeMessage(session);
-		   msg.setFrom(new InternetAddress("jifang1218@gmail.com", false));
+		   
+		   log.debug("from: " + from);
+		   msg.setFrom(new InternetAddress(from, false));
 
+		   log.debug("to: " + to);
 		   msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-		   msg.setSubject("mail from spring title.");
-		   msg.setContent("mail from spring body.", "text/html");
-		   msg.setSentDate(new Date());
+		   
+		   log.debug("title: " + title);
+		   msg.setSubject(title);
+		   
+		   log.debug("content: " + body);
+		   msg.setContent(body, "text/html");
+		   
+		   Date date = new Date();
+		   log.debug("send date: " + date);
+		   msg.setSentDate(date);
 
 		   MimeBodyPart messageBodyPart = new MimeBodyPart();
-		   messageBodyPart.setContent("message body part", "text/html");
+		   messageBodyPart.setContent(body, "text/html");
 
 		   Multipart multipart = new MimeMultipart();
 		   multipart.addBodyPart(messageBodyPart);

@@ -70,11 +70,31 @@ public class TestController {
     
     private void createRootAccount() {
     	try {
+    		// create root company first.
+    		PMSCompany comp = new PMSCompany();
+    		comp.setAddress("Root Company Address");
+    		String creator = "init";
+    		comp.setCreatedBy(creator);
+    		Long timestamp = System.currentTimeMillis();
+    		comp.setCreatedTime(timestamp);
+    		comp.setDesc("this is the company of root account, it contains the root account.");
+    		comp.setModifiedBy(creator);
+    		comp.setModifiedTime(timestamp);
+    		comp.setName("Root Company");
+    		comp.setPhone("1111111111");
+    		comp.setWebsite("www.google.com");
+    		comp = entityProvider.createCompany(comp);
+    		
+    		// second, create a root user.
     		PMSUser root = new PMSUser();
-    		root.setEmail("root@sait.com");
-    		root.setFirstName("root first");
-    		root.setLastName("root last");
+    		root.setEmail("root@root.com");
+    		root.setFirstName("first");
+    		root.setLastName("last");
     		root.setPassword("root");
+    		root.setCreatedBy(creator);
+    		root.setCreatedTime(timestamp);
+    		root.setModifiedBy(creator);
+    		root.setModifiedTime(timestamp);
     		
     		// role
     		List<PMSRole> roles = new ArrayList<>();
@@ -89,7 +109,10 @@ public class TestController {
         	avatar.setFileType(PMSFileType.Image);
     		root.setAvatar(avatar);   
     		
-    		entityProvider.createUser(root, null);
+    		root = entityProvider.createUser(root, comp.getId());
+    		
+    		comp.addUserId(root.getId());
+    		entityProvider.updateCompany(comp.getId(), comp);
     	} catch (DuplicateObjectsException e) {
     		//
     	}
@@ -104,7 +127,7 @@ public class TestController {
     
     private void login() {
     	PMSLoginInfo info = new PMSLoginInfo();
-    	info.setEmail("root@sait.com");
+    	info.setEmail("root@root.com");
     	info.setPassword("root");
     	info.setAuthType(PMSAuthType.system);
     	securityService.login(info);

@@ -1257,38 +1257,7 @@ public class PMSEntityProvider {
     	return ret;
     }
     
-    // users operation
-    private PMSUser createAdminUser(PMSUser user) {
-    	// check if the user exists. 
-    	if (userRepo.existsByEmail(user.getEmail())) {
-    		log.debug("user email=" + user.getEmail() + " already exists.");
-    		throw new DuplicateObjectsException("user email=" + user.getEmail() + " already exists.");
-    	}
-    	
-    	if (user.getPassword() != null) {
-    		user.setPassword(passwdEncoder.encode(user.getPassword()));
-    	}
-    	
-    	if (user.getAvatar() != null) {
-    		user.getAvatar().setParentId(user.getId());
-    		fileRepo.save(user.getAvatar());
-    	} else {
-    		user.setAvatar(getDefaultUserAvatar());
-    	}
-    	
-    	// process roles. we won't create new instance, instead we use existing roles. 
-    	List<PMSRole> existingRoles = new ArrayList<>();
-    	List<PMSRole> newRoles = user.getRoles();
-    	for (PMSRole newRole : newRoles) {
-    		PMSRole existingRole = this.getRoleByName(newRole.getName());
-    		existingRoles.add(existingRole);
-    	}
-    	user.setRoles(existingRoles);
-    	
-    	return userRepo.save(user);
-    }
-    
-    private PMSUser createNormalUser(PMSUser user, Long companyId) {
+    public PMSUser createUser(PMSUser user, Long companyId) {
     	PMSCompany comp = compRepo.findById(companyId).orElseThrow(
         		()-> {
         			log.debug("No company found with id=" + companyId);
@@ -1309,6 +1278,7 @@ public class PMSEntityProvider {
     		user.getAvatar().setParentId(user.getId());
     		fileRepo.save(user.getAvatar());
     	} else {
+    		log.debug("avatar doesn't specify so use the default avatar.");
     		user.setAvatar(getDefaultUserAvatar());
     	}
     	
@@ -1318,6 +1288,7 @@ public class PMSEntityProvider {
     	for (PMSRole newRole : newRoles) {
     		PMSRole existingRole = this.getRoleByName(newRole.getName());
     		existingRoles.add(existingRole);
+    		log.debug("role name: {}", newRole.getName());
     	}
     	user.setRoles(existingRoles);
     	
@@ -1327,41 +1298,6 @@ public class PMSEntityProvider {
         compRepo.save(comp);
     	
         return ret;
-    }
-    
-    public PMSUser createUser(PMSUser user, Long companyId) {
-    	PMSUser ret = null;
-    	
-    	// check if the user exists. 
-    	if (userRepo.existsByEmail(user.getEmail())) {
-    		log.debug("user email=" + user.getEmail() + " already exists.");
-    		throw new DuplicateObjectsException("user email=" + user.getEmail() + " already exists.");
-    	}
-    	
-    	// if companyId is -1, means this user is of admin role. 
-    	if (companyId == null || companyId.longValue() == -1 ) {
-    		// construct admin role. 
-        	PMSRole admin = this.getRoleByName(PMSRoleName.admin);
-    		if (user.getRoles().contains(admin)) {
-    			// create admin user
-    			ret = createAdminUser(user);
-    		} else {
-    			log.debug("companyId is -1 but there is no admin role info.");
-    			throw new RequestValueMismatchException("companyId is -1 but there is no admin role info.");
-    		}
-    	} else {
-    		// construct admin role. 
-    		PMSRole admin = this.getRoleByName(PMSRoleName.admin);
-    		if (user.getRoles().contains(admin)) {
-    			// create admin user
-    			ret = createAdminUser(user);
-    		} else {
-    			// create normal user
-    			ret = createNormalUser(user, companyId);
-    		}
-    	}
-    	
-    	return ret;
     }
     
     public List<PMSUser> getUsersByProject(Long projectId) {

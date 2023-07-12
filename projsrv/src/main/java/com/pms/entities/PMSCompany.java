@@ -91,6 +91,18 @@ public class PMSCompany {
         }
     }
     
+    public void addUserId(Long userId) {
+    	if (!userIds.contains(userId)) {
+    		userIds.add(userId);
+    	}
+    }
+    
+    public void removeUserId(Long userId) {
+    	if (userIds.contains(userId)) {
+    		userIds.remove(userId);
+    	}
+    }
+    
     @CreatedBy
     @Column(updatable=false)
     private String createdBy;

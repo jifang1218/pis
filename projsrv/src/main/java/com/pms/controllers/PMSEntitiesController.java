@@ -305,12 +305,8 @@ public class PMSEntitiesController {
     @PreAuthorize("hasAnyAuthority('manager', 'technician', 'admin', 'viewer')")
     @PostMapping(value="/users")
     public ResponseEntity<PMSUser> createUser(@RequestBody @Validated PMSUser user, 
-    		@RequestParam(name="company_id", required=false) Long companyId) {
-        Long compId = companyId;
-        if (companyId == null) {
-        	compId = Long.valueOf(PMSEntityConstants.kDefaultCompanyId);
-        }
-        return new ResponseEntity<>(entityProvider.createUser(user, compId), HttpStatus.CREATED);
+    		@RequestParam(name="company_id", required=true) Long companyId) {
+        return new ResponseEntity<>(entityProvider.createUser(user, companyId), HttpStatus.CREATED);
     }
     
     @PreAuthorize("hasAnyAuthority('manager', 'technician', 'admin', 'viewer')")

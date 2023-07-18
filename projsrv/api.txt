@@ -1285,7 +1285,70 @@ curl -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/
 
 Return: 200
 
-// TODO
+[ {
+  "id" : 4,
+  "companyId" : 2,
+  "dependentProjectIds" : [ ],
+  "taskIds" : [ 35, 36, 37, 38, 39, 40, 41, 42, 43, 44 ],
+  "admins" : [ ],
+  "managers" : [ ],
+  "technicians" : [ ],
+  "viewers" : [ ],
+  "createdBy" : "anonymousUser",
+  "createdTime" : 1689103523043,
+  "modifiedBy" : "anonymousUser",
+  "modifiedTime" : 1689103523043,
+  "name" : "company_0_name_project_3",
+  "priority" : "Normal",
+  "desc" : "company_0_name_project_3_desc",
+  "avatar" : {
+    "id" : 11,
+    "realFilename" : "/upload/avatar/project_default_avatar.png",
+    "displayFilename" : "/upload/avatar/project_default_avatar.png",
+    "fileType" : "Image",
+    "size" : null,
+    "parentId" : -1,
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1689103515633,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1689103515633
+  },
+  "startDate" : 1689103523035,
+  "endDate" : 1689103523035
+}, 
+...
+{
+  "id" : 6,
+  "companyId" : 2,
+  "dependentProjectIds" : [ ],
+  "taskIds" : [ 57, 58, 59, 60, 61, 62, 63, 64, 65, 66 ],
+  "admins" : [ ],
+  "managers" : [ ],
+  "technicians" : [ ],
+  "viewers" : [ ],
+  "createdBy" : "anonymousUser",
+  "createdTime" : 1689103529615,
+  "modifiedBy" : "anonymousUser",
+  "modifiedTime" : 1689103529615,
+  "name" : "company_0_name_project_5",
+  "priority" : "Normal",
+  "desc" : "company_0_name_project_5_desc",
+  "avatar" : {
+    "id" : 11,
+    "realFilename" : "/upload/avatar/project_default_avatar.png",
+    "displayFilename" : "/upload/avatar/project_default_avatar.png",
+    "fileType" : "Image",
+    "size" : null,
+    "parentId" : -1,
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1689103515633,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1689103515633
+  },
+  "startDate" : 1689103529608,
+  "endDate" : 1689103529608
+} 
+]
 
 =============================================================
 
@@ -1343,25 +1406,307 @@ Roles: admin, manager, technician, viewer
 Login required: true 
 
 Example: 
-curl -X PUT -H "Content-Type:application/json" -H "Accept:application/json" -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODkxNjE4NDksInVzZXJuYW1lIjoicm9vdEByb290LmNvbSJ9.iDZlZvZ1tvlldlbgFqDVVxeoSEnrXrd0JFsj298H704" http://localhost:8080/api/v1/actions/depend/projects/2 -d '[3,4,5,6]' 
-
+curl -X PUT -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/actions/depend/projects/2 -d '[3,4,5,6]' 
 
 Return: 200
 
+{
+  "id" : 2,
+  "companyId" : 2,
+  "dependentProjectIds" : [ 3, 4, 5, 6 ],
+  "taskIds" : [ 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 ],
+  "admins" : [ ],
+  "managers" : [ ],
+  "technicians" : [ ],
+  "viewers" : [ ],
+  "createdBy" : "anonymousUser",
+  "createdTime" : 1689103515634,
+  "modifiedBy" : "anonymousUser",
+  "modifiedTime" : 1689103515634,
+  "name" : "company_0_name_project_1",
+  "priority" : "Normal",
+  "desc" : "company_0_name_project_1_desc",
+  "avatar" : {
+    "id" : 11,
+    "realFilename" : "/upload/avatar/project_default_avatar.png",
+    "displayFilename" : "/upload/avatar/project_default_avatar.png",
+    "fileType" : "Image",
+    "size" : null,
+    "parentId" : -1,
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1689103515633,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1689103515633
+  },
+  "startDate" : 1689103515623,
+  "endDate" : 1689103515623
+}
+
+=============================================================
+
+Remove a dependent project from the project. 
+Method: DELETE
+URL: /api/v1/actions/depend/projects/{project_id}
+Params: project_id in url, dependent_project_id in request param.  
+Roles: admin, manager, technician, viewer
+Login required: true 
+
+Example: 
+curl -X DELETE -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/actions/depend/projects/2?dependent_project_id=3 
+
+Return: 200
+
+{
+  "id" : 2,
+  "companyId" : 2,
+  "dependentProjectIds" : [ 4, 5, 6 ],
+  "taskIds" : [ 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 ],
+  "admins" : [ ],
+  "managers" : [ ],
+  "technicians" : [ ],
+  "viewers" : [ ],
+  "createdBy" : "anonymousUser",
+  "createdTime" : 1689103515634,
+  "modifiedBy" : "anonymousUser",
+  "modifiedTime" : 1689103515634,
+  "name" : "company_0_name_project_1",
+  "priority" : "Normal",
+  "desc" : "company_0_name_project_1_desc",
+  "avatar" : {
+    "id" : 11,
+    "realFilename" : "/upload/avatar/project_default_avatar.png",
+    "displayFilename" : "/upload/avatar/project_default_avatar.png",
+    "fileType" : "Image",
+    "size" : null,
+    "parentId" : -1,
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1689103515633,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1689103515633
+  },
+  "startDate" : 1689103515623,
+  "endDate" : 1689103515623
+}
+
+=============================================================
+
+add a list of dependent tasks to the task. 
+Method: POST
+URL: /api/v1/actions/depend/tasks/{task_id}
+Params: task_id in url, a list of task id as request body. 
+Roles: admin, manager, technician, viewer
+Login required: true 
+
+Example: 
+curl -X POST -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/actions/depend/tasks/2 -d '[3,4,5,6]' 
+
+Return: 200
+
+{
+  "id" : 2,
+  "name" : "company_0_name_project_0_task_0",
+  "desc" : "company_0_name_project_0_task_0_desc",
+  "projectId" : 1,
+  "avatar" : {
+    "id" : 5,
+    "realFilename" : "company_0_name_project_0_task_0_avatar_1689103511618",
+    "displayFilename" : "company_0_name_project_0_task_0_avatar",
+    "fileType" : "Image",
+    "size" : null,
+    "parentId" : null,
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1689103511646,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1689103511646
+  },
+  "dependentTaskIds" : [ 3, 4, 5, 6 ],
+  "userIds" : [ ],
+  "commentIds" : [ 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ],
+  "startDate" : 1689103511618,
+  "endDate" : 1689103511618,
+  "tags" : [ ],
+  "priority" : "Higher",
+  "status" : "NotStarted",
+  "attachments" : [ ],
+  "createdBy" : "anonymousUser",
+  "createdTime" : 1689103511649,
+  "modifiedBy" : "anonymousUser",
+  "modifiedTime" : 1689103511649
+}
+
+=============================================================
+
+Set a list of dependent tasks to the task's dependent task list (replace).
+Method: PUT
+URL: /api/v1/actions/depend/tasks/{task_id}
+Params: task_id in url, a list of task id as request body. 
+Roles: admin, manager, technician, viewer
+Login required: true 
+
+Example: 
+curl -X PUT -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/actions/depend/tasks/2 -d '[5,6,7,8]' 
+
+Return: 200
+
+{
+  "id" : 2,
+  "name" : "company_0_name_project_0_task_0",
+  "desc" : "company_0_name_project_0_task_0_desc",
+  "projectId" : 1,
+  "avatar" : {
+    "id" : 5,
+    "realFilename" : "company_0_name_project_0_task_0_avatar_1689103511618",
+    "displayFilename" : "company_0_name_project_0_task_0_avatar",
+    "fileType" : "Image",
+    "size" : null,
+    "parentId" : null,
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1689103511646,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1689103511646
+  },
+  "dependentTaskIds" : [ 5, 6, 7, 8 ],
+  "userIds" : [ ],
+  "commentIds" : [ 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ],
+  "startDate" : 1689103511618,
+  "endDate" : 1689103511618,
+  "tags" : [ ],
+  "priority" : "Higher",
+  "status" : "NotStarted",
+  "attachments" : [ ],
+  "createdBy" : "anonymousUser",
+  "createdTime" : 1689103511649,
+  "modifiedBy" : "anonymousUser",
+  "modifiedTime" : 1689103511649
+}
+
+=============================================================
+
+Get dependent task list.
+Method: GET
+URL: /api/v1/actions/depend/tasks/{task_id}
+Params: task_id in url. 
+Roles: admin, manager, technician, viewer
+Login required: true 
+
+Example: 
+curl -X GET -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/actions/depend/tasks/2
+
+Return: 200
+
+[ {
+  "id" : 5,
+  "name" : "company_0_name_project_0_task_3",
+  "desc" : "company_0_name_project_0_task_3_desc",
+  "projectId" : 1,
+  "avatar" : {
+    "id" : 6,
+    "realFilename" : "/upload/avatar/task_default_avatar.png",
+    "displayFilename" : "/upload/avatar/task_default_avatar.png",
+    "fileType" : "Image",
+    "size" : null,
+    "parentId" : -1,
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1689103512100,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1689103512100
+  },
+  "dependentTaskIds" : [ ],
+  "userIds" : [ ],
+  "commentIds" : [ 41, 42, 43, 44, 45, 46, 47, 48, 49, 50 ],
+  "startDate" : 1689103513016,
+  "endDate" : 1689103513016,
+  "tags" : [ ],
+  "priority" : "Higher",
+  "status" : "NotStarted",
+  "attachments" : [ ],
+  "createdBy" : "anonymousUser",
+  "createdTime" : 1689103513046,
+  "modifiedBy" : "anonymousUser",
+  "modifiedTime" : 1689103513046
+}, 
+...
+{
+  "id" : 8,
+  "name" : "company_0_name_project_0_task_6",
+  "desc" : "company_0_name_project_0_task_6_desc",
+  "projectId" : 1,
+  "avatar" : {
+    "id" : 9,
+    "realFilename" : "company_0_name_project_0_task_6_avatar_1689103514261",
+    "displayFilename" : "company_0_name_project_0_task_6_avatar",
+    "fileType" : "Image",
+    "size" : null,
+    "parentId" : null,
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1689103514269,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1689103514269
+  },
+  "dependentTaskIds" : [ ],
+  "userIds" : [ ],
+  "commentIds" : [ 71, 72, 73, 74, 75, 76, 77, 78, 79, 80 ],
+  "startDate" : 1689103514261,
+  "endDate" : 1689103514261,
+  "tags" : [ ],
+  "priority" : "Higher",
+  "status" : "NotStarted",
+  "attachments" : [ ],
+  "createdBy" : "anonymousUser",
+  "createdTime" : 1689103514270,
+  "modifiedBy" : "anonymousUser",
+  "modifiedTime" : 1689103514270
+} 
+]
+
+=============================================================
+
+Remove a dependent task from the task.  
+Method: DELETE
+URL: /api/v1/actions/depend/tasks/{task_id}
+Params: task_id in url, dependent_task_id in request param.  
+Roles: admin, manager, technician, viewer
+Login required: true 
+
+Example: 
+curl -X DELETE -H {Content-Type} -H {Accept} -H {Authorization} http://localhost:8080/api/v1/actions/depend/tasks/2?dependent_task_id=7 
+
+Return: 200
+
+{
+  "id" : 2,
+  "name" : "company_0_name_project_0_task_0",
+  "desc" : "company_0_name_project_0_task_0_desc",
+  "projectId" : 1,
+  "avatar" : {
+    "id" : 5,
+    "realFilename" : "company_0_name_project_0_task_0_avatar_1689103511618",
+    "displayFilename" : "company_0_name_project_0_task_0_avatar",
+    "fileType" : "Image",
+    "size" : null,
+    "parentId" : null,
+    "createdBy" : "anonymousUser",
+    "createdTime" : 1689103511646,
+    "modifiedBy" : "anonymousUser",
+    "modifiedTime" : 1689103511646
+  },
+  "dependentTaskIds" : [ 5, 6, 8 ],
+  "userIds" : [ ],
+  "commentIds" : [ 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ],
+  "startDate" : 1689103511618,
+  "endDate" : 1689103511618,
+  "tags" : [ ],
+  "priority" : "Higher",
+  "status" : "NotStarted",
+  "attachments" : [ ],
+  "createdBy" : "anonymousUser",
+  "createdTime" : 1689103511649,
+  "modifiedBy" : "anonymousUser",
+  "modifiedTime" : 1689103511649
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+curl -X DELETE -H "Content-Type:application/json" -H "Accept:application/json" -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODk2NTQ2MDcsInVzZXJuYW1lIjoicm9vdEByb290LmNvbSJ9.T7TmF33WrXuFnX6Ptg09hRa12hc_fOgAXgwXD_kM6QA" http://localhost:8080/api/v1/actions/depend/tasks/2?dependent_task_id=7
 
 
 

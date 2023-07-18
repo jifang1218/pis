@@ -3,6 +3,7 @@
  */
 package com.pms.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,15 +89,17 @@ public class PMSActionsController {
     
     @PreAuthorize("hasAnyAuthority('admin', 'manager', 'technician', 'viewer')")
     @PutMapping(value="/depend/projects/{project_id}")
-    public PMSProject setDependentProjects(@PathVariable("projectId") Long projectId, 
-            @RequestBody List<Long> dependentProjectIds) {
+    public PMSProject setDependentProjects(@PathVariable("project_id") Long projectId, 
+            @RequestBody @Validated List<Long> dependentProjectIds) {
         return entityProvider.setDependentProjectIds(projectId, dependentProjectIds);
     }
     
     @PreAuthorize("hasAnyAuthority('admin', 'manager', 'technician', 'viewer')")
     @DeleteMapping(value="/depend/projects/{project_id}")
-    public PMSProject removeDependentProjects(@PathVariable("projectId") Long projectId, 
-            @RequestBody List<Long> dependentProjectIds) {
+    public PMSProject removeDependentProjects(@PathVariable("project_id") Long projectId, 
+    		@RequestParam("dependent_project_id") Long dependentProjectId) {
+    	List<Long> dependentProjectIds = new ArrayList<>();
+    	dependentProjectIds.add(dependentProjectId);
         return entityProvider.removeDependentProjectIds(projectId, dependentProjectIds);
     }
     
@@ -118,7 +121,9 @@ public class PMSActionsController {
     @PreAuthorize("hasAnyAuthority('admin', 'manager', 'technician', 'viewer')")
     @DeleteMapping(value="/depend/tasks/{task_id}")
     public PMSTask removeDependentTasks(@PathVariable("task_id") Long taskId, 
-            @RequestBody List<Long> dependentTaskIds) {
+    		@RequestParam("dependent_task_id") Long dependentTaskId) {
+    	List<Long> dependentTaskIds = new ArrayList<>();
+    	dependentTaskIds.add(dependentTaskId);
         return entityProvider.removeDependentTasks(taskId, dependentTaskIds);
     }
     
@@ -130,57 +135,57 @@ public class PMSActionsController {
     
     // assign users to task
     @PreAuthorize("hasAnyAuthority('admin', 'manager', 'technician', 'viewer')")
-    @PostMapping(value="/assign/tasks/{taskId}")
-    public PMSTask addUsersToTask(@PathVariable("taskId") Long taskId, 
+    @PostMapping(value="/assign/tasks/{task_id}")
+    public PMSTask addUsersToTask(@PathVariable("task_id") Long taskId, 
                 @RequestBody @Validated List<Long> userIds) {
         return entityProvider.addUsersToTask(taskId, userIds);
     }
     
     @PreAuthorize("hasAnyAuthority('admin', 'manager', 'technician', 'viewer')")
-    @PutMapping(value="/assign/tasks/{taskId}")
-    public PMSTask setUsersToTask(@PathVariable("taskId") Long taskId, 
+    @PutMapping(value="/assign/tasks/{task_id}")
+    public PMSTask setUsersToTask(@PathVariable("task_id") Long taskId, 
                 @RequestBody @Validated List<Long> userIds) {
         return entityProvider.setUsersToTask(taskId, userIds);
     }
     
     @PreAuthorize("hasAnyAuthority('admin', 'manager', 'technician', 'viewer')")
-    @DeleteMapping(value="/assign/tasks/{taskId}")
-    public void removeUsersFromTask(@PathVariable("taskId") Long taskId, 
+    @DeleteMapping(value="/assign/tasks/{task_id}")
+    public void removeUsersFromTask(@PathVariable("task_id") Long taskId, 
             @RequestBody List<Long> userIds) {
         entityProvider.removeUsersFromTask(taskId, userIds);
     }
     
     @PreAuthorize("hasAnyAuthority('admin', 'manager', 'technician', 'viewer')")
-    @GetMapping(value="/assign/tasks/{taskId}")
-    public List<PMSUser> getUsersByTask(@PathVariable("taskId") Long taskId) {
+    @GetMapping(value="/assign/tasks/{task_id}")
+    public List<PMSUser> getUsersByTask(@PathVariable("task_id") Long taskId) {
         return entityProvider.getUsersByTaskId(taskId);
     }
  
     // assign users to project.
     @PreAuthorize("hasAnyAuthority('admin', 'manager', 'technician', 'viewer')")
-    @PostMapping(value="/assign/projects/{projectId}")
-    public PMSTask addUsersToProject(@PathVariable("projectId") Long projectId, 
+    @PostMapping(value="/assign/projects/{project_id}")
+    public PMSTask addUsersToProject(@PathVariable("project_id") Long projectId, 
                 @RequestBody @Validated List<Long> userIds) {
         return entityProvider.addUsersToProject(projectId, userIds);
     }
     
     @PreAuthorize("hasAnyAuthority('admin', 'manager', 'technician', 'viewer')")
-    @PutMapping(value="/assign/projects/{projectId}")
-    public PMSTask setUsersToProject(@PathVariable("projectId") Long projectId, 
+    @PutMapping(value="/assign/projects/{project_id}")
+    public PMSTask setUsersToProject(@PathVariable("project_id") Long projectId, 
                 @RequestBody @Validated List<Long> userIds) {
         return entityProvider.setUsersToProject(projectId, userIds);
     }
     
     @PreAuthorize("hasAnyAuthority('admin', 'manager', 'technician', 'viewer')")
-    @DeleteMapping(value="/assign/projects/{projectId}")
-    public void removeUsersFromProject(@PathVariable("projectId") Long projectId, 
+    @DeleteMapping(value="/assign/projects/{project_id}")
+    public void removeUsersFromProject(@PathVariable("project_id") Long projectId, 
             @RequestBody List<Long> userIds) {
         entityProvider.removeUsersFromProject(projectId, userIds);
     }
     
     @PreAuthorize("hasAnyAuthority('admin', 'manager', 'technician', 'viewer')")
-    @GetMapping(value="/assign/projects/{projectId}")
-    public List<PMSUser> getUsersByProject(@PathVariable("projectId") Long projectId) {
+    @GetMapping(value="/assign/projects/{project_id}")
+    public List<PMSUser> getUsersByProject(@PathVariable("project_id") Long projectId) {
         return entityProvider.getUsersByProject(projectId);
     }
     
